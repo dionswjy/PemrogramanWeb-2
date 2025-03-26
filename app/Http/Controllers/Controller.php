@@ -87,7 +87,7 @@ class CartController extends Controller
         // Ambil data produk dari database (contoh sederhana)
         $products = [
             1 => ['id' => 1, 'name' => 'Erigo T-Shirt', 'price' => 150000],
-            2 => ['id' => 2, 'name' => 'Erigo T-Shirt', 'price' => 175000],
+            2 => ['id' => 2, 'name' => 'Erigo Celana', 'price' => 175000],
             3 => ['id' => 3, 'name' => 'Erigo Hoodie', 'price' => 300000],
             4 => ['id' => 4, 'name' => 'Erigo Jacket', 'price' => 500000],
         ];

@@ -6,8 +6,39 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 
+Route::get('/', function(){
+    $title = "Homepage";
+   
+    return view('web.homepage',['title'=>$title]);
+   });
+   Route::get('Produk', function(){
+    $title = "Produk";
+    return view('web.Produk',['title'=>$title]);
+   });
+   Route::get('product/{slug}', function($slug){
+    $title = "Single Product";
+    return view('web.single_product',['title'=>$title,'slug'=>$slug]);
+   });
+   Route::get('categories', function(){
+    $title = "Categories";
+    return view('web.categories',['title'=>$title]);
+   });
+   Route::get('category/{slug}', function($slug){
+    $title = "Single Category";
+    return view('web.single_category',['title'=>$title,'slug'=>$slug]);
+   });
+   Route::get('cart', function(){
+    $title = "Cart";
+    return view('web.cart',['title'=>$title]);
+   });
+   Route::get('checkout', function(){
+    $title = "Checkout";
+    return view('web.checkout',['title'=>$title]);
+   });
+
+
 // Route untuk halaman utama
-Route::get('/   ', function () {
+Route::get('/home', function () {
     return view('welcome');
 });
 
