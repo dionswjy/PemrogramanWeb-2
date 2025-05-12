@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->string('image')->nullable();
-            $table->timestamps();
+            $table->id(); // PRIMARY KEY: id (BIGINT AUTO_INCREMENT)
+            $table->string('name'); // Nama kategori
+            $table->string('slug')->unique(); // Slug unik, misal: makanan-kering
+            $table->text('description')->nullable(); // Deskripsi opsional
+            $table->string('image')->nullable(); // Gambar kategori
+            $table->timestamps(); // created_at & updated_at
         });
     }
 
@@ -29,3 +29,4 @@ return new class extends Migration
         Schema::dropIfExists('product_categories');
     }
 };
+
