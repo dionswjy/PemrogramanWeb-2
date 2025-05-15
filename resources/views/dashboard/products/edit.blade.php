@@ -53,9 +53,33 @@
             @enderror
         </div>
 
+        <div class="space-y-2">
+            <flux:input name="image" label="Image" type="file" />
+            @if ($product->image_url)
+                <img src="{{ asset('storage/' . $product->image_url) }}" alt="{{ $product->name }}" class="w-16 h-16 object-cover rounded mt-2">
+            @endif
+            @error('image')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div class="space-y-2">
+            <flux:input name="slug" label="Slug" value="{{ old('slug', $product->slug) }}" required />
+            @error('slug')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror   
+        </div>
+
+        <div class="space-y-2">
+            <flux:input name="is_active" label="Is Active" type="checkbox" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }} />
+            @error('is_active')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
         <div class="flex justify-end space-x-4">
             <a href="{{ route('dashboard.products.index') }}"
-               class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-200">
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-200">
                 Cancel
             </a>
             <flux:button type="submit" icon="plus" variant="primary">Update</flux:button>

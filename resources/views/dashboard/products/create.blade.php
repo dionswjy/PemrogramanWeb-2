@@ -25,6 +25,17 @@
 
         <flux:input name="stock" label="Stock" type="number" value="{{ old('stock') }}" min="0" placeholder="0" required />
 
+        <flux:input name="slug" label="Slug" placeholder="Product Slug" value="{{ old('slug') }}" required />
+
+        <flux:input name="sku" label="SKU" placeholder="Product SKU" value="{{ old('sku') }}" required />
+
+        <flux:input name="is_active" label="Is Active" type="checkbox" value="1" {{ old('is_active') ? 'checked' : '' }} />
+        
+        <flux:input name="is_featured" label="Is Featured" type="checkbox" value="1" {{ old('is_featured') ? 'checked' : '' }} />
+
+        <flux:input name="is_new" label="Is New" type="checkbox" value="1" {{ old('is_new') ? 'checked' : '' }} />
+
+
         <flux:input name="image" label="Image" type="file" placeholder="Upload Product Image" />
 
         <div class="flex justify-end space-x-4">
