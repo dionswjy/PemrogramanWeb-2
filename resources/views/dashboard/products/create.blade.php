@@ -1,49 +1,40 @@
-<x-layouts.app :title="('Add New Product')">
-    <flux:heading>Add New Product</flux:heading>
-    <flux:subheading>Form untuk menambahkan produk baru ke dalam sistem</flux:subheading>
-    <flux:separator variant="subtle" />
+<x-layouts.app :title="__('Products')">
+    <div class="relative mb-6 w-full">
+        <flux:heading size="xl">Add New Product</flux:heading>
+        <flux:subheading size="lg" class="mb-6">Manage data Products</flux:subheading>
+        <flux:separator variant="subtle" />
+    </div>
 
-    <form action="{{ route('dashboard.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 mt-6">
+    @if(session()->has('successMessage'))
+    <flux:badge color="lime" class="mb-3 w-full">{{ session()->get('successMessage') }}</flux:badge>
+    @elseif(session()->has('errorMessage'))
+    <flux:badge color="red" class="mb-3 w-full">{{ session()->get('errorMessage') }}</flux:badge>
+    @endif
+
+    <form action="{{ route('dashboard.products.store') }}" method="post" enctype="multipart/form-data">
         @csrf
 
-        <flux:input name="name" label="Name" placeholder="Product Name" value="{{ old('name') }}" required />
-
-        <flux:textarea name="description" label="Description" placeholder="Product Description" required>
-            {{ old('description') }}
-        </flux:textarea>
-
-        <flux:select name="product_category_id" label="Category" required>
-            <option value="">Select Category</option>
+        <flux:input label="Name" name="name" class="mb-3" placeholder="Product Name" value="{{ old('name') }}" />
+        <flux:select label="Category" name="category_slug" class="mb-3">
             @foreach ($categories as $category)
-                <option value="{{ $category->id }}" {{ old('product_category_id') == $category->id ? 'selected' : '' }}>
-                    {{ $category->name }}
-                </option>
+            <option value="{{ $category->slug }}" @selected(old('category_slug')==$category->slug)>
+                {{ $category->name }}
+            </option>
             @endforeach
         </flux:select>
-
-        <flux:input name="price" label="Price" type="number" value="{{ old('price') }}" step="0.01" min="0" placeholder="0.00" required />
-
-        <flux:input name="stock" label="Stock" type="number" value="{{ old('stock') }}" min="0" placeholder="0" required />
-
-        <flux:input name="slug" label="Slug" placeholder="Product Slug" value="{{ old('slug') }}" required />
-
-        <flux:input name="sku" label="SKU" placeholder="Product SKU" value="{{ old('sku') }}" required />
-
-        <flux:input name="is_active" label="Is Active" type="checkbox" value="1" {{ old('is_active') ? 'checked' : '' }} />
-        
-        <flux:input name="is_featured" label="Is Featured" type="checkbox" value="1" {{ old('is_featured') ? 'checked' : '' }} />
-
-        <flux:input name="is_new" label="Is New" type="checkbox" value="1" {{ old('is_new') ? 'checked' : '' }} />
-
-
-        <flux:input name="image" label="Image" type="file" placeholder="Upload Product Image" />
-
-        <div class="flex justify-end space-x-4">
-            <a href="{{ route('dashboard.products.index') }}"
-                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-200">
-                Cancel
-            </a>
-            <flux:button type="submit" icon="plus" variant="primary">Save</flux:button>
+        <flux:input label="Slug" name="slug" class="mb-3" placeholder="product-name" value="{{ old('slug') }}" />
+        <flux:input label="SKU" name="sku" class="mb-3" placeholder="Stock Keeping Unit" value="{{ old('sku') }}" />
+        <flux:textarea label="Description" name="description" class="mb-3" placeholder="Product Description">
+            {{ old('description') }}
+        </flux:textarea>
+        <flux:input label="Price" name="price" type="number" class="mb-3" placeholder="Product Price" value="{{ old('price') }}" />
+        <flux:input label="Stock" name="stock" type="number" class="mb-3" placeholder="Available Stock" value="{{ old('stock') }}" />
+        <flux:input type="file" label="Image" name="image" class="mb-3" />
+        <flux:separator />
+        <div class="mt-4">
+            <flux:button type="submit" variant="primary">Simpan</flux:button>
+            <flux:link href="{{ route('dashboard.products.index') }}" variant="ghost" class="ml-3">Kembali</flux:link>
         </div>
     </form>
+
 </x-layouts.app>

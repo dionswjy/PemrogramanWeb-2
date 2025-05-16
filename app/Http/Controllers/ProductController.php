@@ -2,17 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Categories;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+
+
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->get(); // Relasi ke kategori
-        return view('dashboard.products.index', compact('products'));
+        $q = $request->get('q');
+        $products = Product::when($q, function ($query) use ($q) {
+            $query->where('name', 'like', "%$q%")
+                ->orWhere('description', 'like', "%$q%");
+        })->latest()->paginate(10);
+
+        return view('dashboard.products.index', compact('products', 'q'));
     }
 
     public function create()
@@ -21,95 +31,133 @@ class ProductController extends Controller
         return view('dashboard.products.create', compact('categories'));
     }
 
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'category_slug' => 'required|string|exists:product_categories,slug',
             'slug' => 'required|string|max:255|unique:products,slug',
-            'description' => 'nullable|string|max:255',
-            'sku' => 'required|string|max:100|unique:products,sku',
+            'sku' => 'required|string|max:50|unique:products,sku',
+            'description' => 'nullable|string',
             'price' => 'required|numeric',
-            'stock' => 'required|integer',
-            'product_category_id' => 'required|exists:product_categories,id',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png'
+            'stock' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput();
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        $product = new Product();
-        $product->name = $request->name;
-        $product->slug = $request->slug;
-        $product->description = $request->description;
-        $product->sku = $request->sku;
-        $product->price = $request->price;
-        $product->stock = $request->stock;
-        $product->product_category_id = $request->product_category_id;
-        $product->is_active = $request->has('is_active');
+        $validated = $validator->validated();
 
+        $category = Categories::where('slug', $validated['category_slug'])->first();
+
+        $imageUrl = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('uploads/products', $imageName, 'public');
-            $product->image_url = $imagePath;
+            $imagePath = public_path('images');
+            $image->move($imagePath, $imageName);
+            $imageUrl = 'images/' . $imageName;
         }
 
-        $product->save();
+        Product::create([
+            'name' => $validated['name'],
+            'slug' => Str::slug($validated['slug']),
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'stock' => $validated['stock'],
+            'sku' => $validated['sku'],
+            'product_category_id' => $category->id,
+            'image_url' => $imageUrl,
+            'is_active' => ((int) $validated['stock'] > 0),
+        ]);
 
-        return redirect()->route('products.index')->with('success', 'Product created successfully.');
+        return redirect()->route('dashboard.products.index')->with('successMessage', 'Data Berhasil Disimpan');
     }
 
-    public function edit($id)
+
+    public function show(Product $product)
     {
-        $product = Product::findOrFail($id);
+        return view('dashboard.products.index', compact('product'));
+    }
+
+    public function edit(Product $product)
+    {
         $categories = Categories::all();
         return view('dashboard.products.edit', compact('product', 'categories'));
     }
 
-    public function update(Request $request, $id)
+
+    public function update(Request $request, Product $product)
     {
-        $product = Product::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:products,slug,' . $id,
-            'description' => 'nullable|string|max:255',
-            'sku' => 'required|string|max:100|unique:products,sku,' . $id,
+            'category_slug' => 'required|string|exists:product_categories,slug',
+            'slug' => 'required|string|max:255|unique:products,slug,' . $product->id,
+            'sku' => 'required|string|max:50|unique:products,sku,' . $product->id,
+            'description' => 'nullable|string',
             'price' => 'required|numeric',
-            'stock' => 'required|integer',
-            'product_category_id' => 'required|exists:product_categories,id',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png'
-        ]);
+            'stock' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ];
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput();
-        }
+        $validated = $request->validate($rules);
 
-        $product->fill($request->only(['name', 'slug', 'description', 'sku', 'price', 'stock', 'product_category_id', 'is_active']));
-        $product->is_active = $request->has('is_active');
+        $category = Categories::where('slug', $validated['category_slug'])->first();
+
+        $slug = Str::slug($validated['slug'] ?? $validated['name']);
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $imagePath = $image->storeAs(
-                'uploads/products',
-                $imageName,
-                'public'
-            );
-            $product->image_url = $imagePath;
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = public_path('images');
+
+            if ($product->image_url && file_exists(public_path($product->image_url))) {
+                unlink(public_path($product->image_url));
+            }
+
+            $image->move($imagePath, $imageName);
+            $imageUrl = 'images/' . $imageName;
+        } else {
+            $imageUrl = $product->image_url;
         }
 
-        $product->save();
+        $product->update([
+            'name' => $validated['name'],
+            'slug' => $slug,
+            'sku' => $validated['sku'],
+            'description' => $validated['description'] ?? null,
+            'price' => $validated['price'],
+            'stock' => $validated['stock'],
+            'product_category_id' => $category->id,
+            'image_url' => $imageUrl,
+            'is_active' => ((int) $validated['stock'] > 0),
+        ]);
 
-        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('dashboard.products.index')->with('successMessage', 'Data Berhasil Diperbarui');
     }
 
-    public function destroy($id)
+
+    public function destroy(Product $product)
     {
-        $product = Product::findOrFail($id);
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+
         $product->delete();
 
-        return redirect()->back()->with('success', 'Product deleted successfully.');
+        return redirect()->route('dashboard.products.index')->with('successMessage', 'Data Berhasil Dihapus');
+    }
+    public function toggleStatus($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->is_active = !$product->is_active;
+        $product->save();
+
+        return redirect()->back()->with('success', 'Status produk berhasil diperbarui.');
     }
 }

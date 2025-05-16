@@ -2,142 +2,123 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Categories;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
 
 class ProductCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Categories::all();
+        $categories = Categories::query()
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->q . '%')
+                    ->orWhere('description', 'like', '%' . $request->q . '%');
+            })
+            ->paginate(10);
 
-        return view('dashboard.categories.index',['categories'=>$categories]);
+        return view('dashboard.categories.index', [
+            'categories' => $categories,
+            'q' => $request->q,
+            'title' => 'Daftar Kategori'
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('dashboard.categories.create');
+        return view('dashboard.categories.create', [
+            'title' => 'Tambah Kategori'
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validasi input
-        $validasi = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'slug' => 'required|max:45|unique:product_categories,slug',
-            'description' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // jika ingin validasi gambar
+            'slug' => 'required|string|max:255|unique:product_categories,slug',
+            'description' => 'nullable|max:1000',
         ]);
-    
-        // Jika validasi gagal
-        if ($validasi->fails()) {
-            return redirect()->back()
-                ->withErrors($validasi)
-                ->with('error', 'Validasi Gagal')
-                ->withInput();
+
+        if ($validator->fails()) {
+            return redirect()->back()->with([
+                'errors' => $validator->errors(),
+                'errorMessage' => 'Validasi Error, Silahkan lengkapi data terlebih dahulu'
+            ]);
         }
-    
-        // Jika validasi berhasil, simpan ke DB
-        $category = new Categories();
+
+        $category = new Categories;
+        $category->name = $request->input('name');
+        $category->slug = $request->input('slug');
+        $category->description = $request->input('description');
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imagePath = $image->storeAs('uploads/categories', $imageName, 'public');
+            $category->image = $imagePath;
+        }
+
+        $category->save();
+
+        return redirect()->route('dashboard.categories.index')
+            ->with('successMessage', 'Data Berhasil Disimpan');
+    }
+
+    public function show(string $id)
+    {
+        // Bisa diisi atau dihapus jika tidak digunakan
+    }
+
+    public function edit(string $id)
+    {
+        $category = Categories::find($id);
+
+        return view('dashboard.categories.edit', [
+            'category' => $category,
+            'title' => 'Edit Kategori'
+        ]);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255',
+            'description' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with([
+                'errors' => $validator->errors(),
+                'errorMessage' => 'Validasi Error, Silahkan lengkapi data terlebih dahulu'
+            ]);
+        }
+
+        $category = Categories::find($id);
         $category->name = $request->name;
         $category->slug = $request->slug;
         $category->description = $request->description;
-    
-        // Simpan gambar jika ada
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagename = time() . '.' . $image->getClientOriginalExtension();
-            $imagepath = $image->storeAs('images/categories', $imagename, 'public');
-            $category->image = $imagepath;
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imagePath = $image->storeAs('uploads/categories', $imageName, 'public');
+            $category->image = $imagePath;
         }
-    
+
         $category->save();
-    
-        return redirect()->route('categories.index')
-            ->with('success', 'Category created successfully.');
+
+        return redirect()->route('dashboard.categories.index')
+            ->with('successMessage', 'Data Berhasil Diperbarui');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $category = Categories::findOrFail($id);
-        return view('dashboard.categories.edit', 
-            ['category' => $category]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $category = Categories::findOrFail($id);
-
-    $validasi = Validator::make($request->all(), [
-        'name' => 'required|max:255',
-        'slug' => 'required|max:45|unique:product_categories,slug,' . $category->id,
-        'description' => 'required',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
-
-    if ($validasi->fails()) {
-        return redirect()->back()
-            ->withErrors($validasi)
-            ->with('errorMessage', 'Validasi gagal')
-            ->withInput();
-    }
-
-    $category->name = $request->name;
-    $category->slug = $request->slug;
-    $category->description = $request->description;
-
-    if ($request->hasFile('image')) {
-        // Hapus gambar lama jika ada
-        if ($category->image && \Storage::disk('public')->exists($category->image)) {
-            \Storage::disk('public')->delete($category->image);
-        }
-
-        $image = $request->file('image');
-        $imagename = time() . '.' . $image->getClientOriginalExtension();
-        $imagepath = $image->storeAs('images/categories', $imagename, 'public');
-        $category->image = $imagepath;
-    }
-
-    $category->save();
-
-    return redirect()->route('categories.index')
-        ->with('successMessage', 'Category updated successfully.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $category = Categories::findOrFail($id);
+        $category = Categories::find($id);
         $category->delete();
 
-        return redirect()->route('categories.index')
-            ->with('success', 'Category deleted successfully.');
+        return redirect()->back()->with([
+            'successMessage' => 'Data Berhasil Dihapus'
+        ]);
     }
 }

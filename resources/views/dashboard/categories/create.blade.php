@@ -1,41 +1,28 @@
-<x-layouts.app :title="('Create New Product Category')">
-    <flux:heading>Create New Product Category</flux:heading>
-    <flux:subheading>Form untuk menambah product category baru</flux:subheading>
-    <flux:separator variant="subtle" />
-
-    <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+<x-layouts.app :title="__('Categories')">
+    <div class="relative mb-6 w-full">
+        <flux:heading size="xl">Add New Product Categories</flux:heading>
+        <flux:subheading size="lg" class="mb-6">Manage data Product Categories</flux:heading>
+            <flux:separator variant="subtle" />
+    </div>
+    @if(session()->has('successMessage'))
+    <flux:badge color="lime" class="mb-3 w-full">{{session()->get('successMessage')}}</flux:badge>
+    @elseif(session()->has('errorMessage'))
+    <flux:badge color="red" class="mb-3 w-full">{{session()->get('errorMessage')}}</flux:badge>
+    @endif
+    <form action="{{ route('dashboard.categories.store') }}" method="post"
+        enctype="multipart/form-data">
         @csrf
 
-        <flux:input name="name" label="Name" placeholder="Product Category Name" value="{{ old('name') }}" required />
-        <flux:input name="slug" label="Slug" placeholder="Product Category Slug" value="{{ old('slug') }}" required />
-        <flux:input name="sku" label="SKU" placeholder="Product Category SKU" value="{{ old('sku') }}" required />
-
-        <div>
-            <label for="product_category_id" class="block text-sm font-medium text-gray-700 mb-1">Parent Category</label>
-            <select name="product_category_id" id="product_category_id" class="w-full border border-gray-300 rounded p-2">
-                <option value="">Select Parent Category</option>
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}" {{ old('product_category_id') == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
-                @endforeach
-            </select>
+        <flux:input label="Name" name="name" class="mb-3" placeholder="Product Category Name"/>
+        <flux:input label="Slug" name="slug" class="mb-3" placeholder="product-category-name"/>
+        <flux:textarea label="Description" name="description" class="mb-3" placeholder="Product Category Description"/>
+        <flux:input type="file" label="Image" name="image" class="mb-3"/>
+        <flux:separator />
+        <div class="mt-4">
+            <flux:button type="submit" variant="primary">Simpan</flux:button>
+            <flux:link href="{{ route('dashboard.categories.index') }}" variant="ghost"
+                class="ml-3">Kembali</flux:link>
         </div>
-
-        <flux:input name="price" label="Price" type="number" placeholder="Product Category Price" value="{{ old('price') }}" required />
-        <flux:input name="stock" label="Stock" type="number" placeholder="Product Category Stock" value="{{ old('stock') }}" required />
-
-        <flux:textarea name="description" label="Description" placeholder="Product Category Description" required>
-            {{ old('description') }}
-        </flux:textarea>
-
-        <flux:input name="image" type="file" label="Image" placeholder="Product Category Image" />
-
-        <flux:select label="Status" name="is_active" class="mb-2" required>
-            <option value="1" {{ old('is_active') == '1' ? 'selected' : '' }}>Active</option>
-            <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Nonactive</option>
-        </flux:select>
-
-        <flux:button type="submit" icon="plus" variant="primary" class="mt-4">Simpan</flux:button>
     </form>
 </x-layouts.app>
+
