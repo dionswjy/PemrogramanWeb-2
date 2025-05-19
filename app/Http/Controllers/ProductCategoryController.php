@@ -13,21 +13,21 @@ class ProductCategoryController extends Controller
         $categories = Categories::query()
             ->when($request->filled('q'), function ($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->q . '%')
-                    ->orWhere('description', 'like', '%' . $request->q . '%');
+                      ->orWhere('description', 'like', '%' . $request->q . '%');
             })
             ->paginate(10);
 
         return view('dashboard.categories.index', [
             'categories' => $categories,
             'q' => $request->q,
-            'title' => 'Daftar Kategori'
+            'title' => 'Manajemen Kategori Produk',
         ]);
     }
 
     public function create()
     {
         return view('dashboard.categories.create', [
-            'title' => 'Tambah Kategori'
+            'title' => 'Tambah Kategori Produk',
         ]);
     }
 
@@ -40,10 +40,8 @@ class ProductCategoryController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->with([
-                'errors' => $validator->errors(),
-                'errorMessage' => 'Validasi Error, Silahkan lengkapi data terlebih dahulu'
-            ]);
+            return redirect()->back()->withErrors($validator)->withInput()
+                ->with('errorMessage', 'Validasi Error, Silakan lengkapi data terlebih dahulu');
         }
 
         $category = new Categories;
@@ -66,16 +64,21 @@ class ProductCategoryController extends Controller
 
     public function show(string $id)
     {
-        // Bisa diisi atau dihapus jika tidak digunakan
+        $category = Categories::findOrFail($id);
+
+        return view('dashboard.categories.show', [
+            'category' => $category,
+            'title' => 'Detail Kategori Produk',
+        ]);
     }
 
     public function edit(string $id)
     {
-        $category = Categories::find($id);
+        $category = Categories::findOrFail($id);
 
         return view('dashboard.categories.edit', [
             'category' => $category,
-            'title' => 'Edit Kategori'
+            'title' => 'Edit Kategori Produk',
         ]);
     }
 
@@ -84,17 +87,15 @@ class ProductCategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255',
-            'description' => 'required'
+            'description' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->with([
-                'errors' => $validator->errors(),
-                'errorMessage' => 'Validasi Error, Silahkan lengkapi data terlebih dahulu'
-            ]);
+            return redirect()->back()->withErrors($validator)->withInput()
+                ->with('errorMessage', 'Validasi Error, Silakan lengkapi data terlebih dahulu');
         }
 
-        $category = Categories::find($id);
+        $category = Categories::findOrFail($id);
         $category->name = $request->name;
         $category->slug = $request->slug;
         $category->description = $request->description;
@@ -114,11 +115,9 @@ class ProductCategoryController extends Controller
 
     public function destroy(string $id)
     {
-        $category = Categories::find($id);
+        $category = Categories::findOrFail($id);
         $category->delete();
 
-        return redirect()->back()->with([
-            'successMessage' => 'Data Berhasil Dihapus'
-        ]);
+        return redirect()->back()->with('successMessage', 'Data Berhasil Dihapus');
     }
 }
