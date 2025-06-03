@@ -5,7 +5,7 @@ use Livewire\Volt\Volt;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
-
+use App\Http\Controllers\CustomerAuthController;
 
 // ====================
 // ROUTE UNTUK USER (FRONTEND)
@@ -19,8 +19,8 @@ Route::get('category/{slug}', [HomepageController::class, 'category'])->name('ca
 Route::get('cart', [HomepageController::class, 'cart'])->name('cart');
 Route::get('checkout', [HomepageController::class, 'checkout'])->name('checkout');
 
+// Toggle status produk (PATCH)
 Route::patch('/products/{id}/toggle-status', [ProductController::class, 'toggleStatus'])->name('products.toggleStatus');
-
 
 // ====================
 // ROUTE DASHBOARD
@@ -30,15 +30,33 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-// Pindahkan route produk ke dalam prefix dashboard supaya nama route-nya jadi dashboard.products.*
+// Produk & Kategori di dashboard
 Route::prefix('dashboard')->middleware(['auth'])->name('dashboard.')->group(function () {
     Route::resource('categories', ProductCategoryController::class);
     Route::resource('products', ProductController::class);
 });
 
-// Route produk di luar prefix dashboard tapi dengan middleware auth
+// Produk di luar dashboard tapi tetap dengan middleware auth
 Route::resource('products', ProductController::class)->middleware(['auth']);
 
+// ====================
+// ROUTE CUSTOMER AUTH
+// ====================
+
+Route::prefix('customer')->name('customer.')->group(function () {
+    Route::controller(CustomerAuthController::class)->group(function () {
+        // Tampilkan halaman login
+        Route::get('login', 'login')->name('login');
+        // Aksi login
+        Route::post('login', 'store_login')->name('store_login');
+        // Tampilkan halaman register
+        Route::get('register', 'register')->name('register');
+        // Aksi register
+        Route::post('register', 'store_register')->name('store_register');
+        // Aksi logout
+        Route::post('logout', 'logout')->name('logout');
+    });
+});
 
 // ====================
 // ROUTE SETTINGS (LIVEWIRE VOLT)
@@ -46,7 +64,6 @@ Route::resource('products', ProductController::class)->middleware(['auth']);
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
-
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
