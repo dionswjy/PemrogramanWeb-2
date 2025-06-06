@@ -11,6 +11,8 @@ use App\Http\Controllers\CustomerAuthController;
 // ROUTE UNTUK USER (FRONTEND)
 // ====================
 
+Route::get('/api-data', [ApiController::class, 'getApiData'])->name('api.data');
+
 Route::get('/', [HomepageController::class, 'index'])->name('home');
 Route::get('products', [HomepageController::class, 'products'])->name('products');
 Route::get('product/{slug}', [HomepageController::class, 'product'])->name('product');

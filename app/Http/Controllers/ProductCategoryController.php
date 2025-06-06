@@ -13,7 +13,7 @@ class ProductCategoryController extends Controller
         $categories = Categories::query()
             ->when($request->filled('q'), function ($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->q . '%')
-                      ->orWhere('description', 'like', '%' . $request->q . '%');
+                    ->orWhere('description', 'like', '%' . $request->q . '%');
             })
             ->paginate(10);
 
@@ -39,6 +39,7 @@ class ProductCategoryController extends Controller
             'description' => 'nullable|max:1000',
         ]);
 
+        //check if validation fails
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput()
                 ->with('errorMessage', 'Validasi Error, Silakan lengkapi data terlebih dahulu');
