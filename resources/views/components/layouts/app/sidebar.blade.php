@@ -17,6 +17,7 @@
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                     <flux:navlist.item icon="clipboard-document-list" :href="route('dashboard.categories.index')" :current="request()->routeIs('dashboard.categories.index')" wire:navigate>{{ __('Categories') }}</flux:navlist.item>
                     <flux:navlist.item icon="shopping-bag" :href="route('products.index')" :current="request()->routeIs('products.index')" wire:navigate>{{ __('Products') }}</flux:navlist.item>
+                    <flux:navlist.item icon="shopping-cart" :href="route('orders.index')" :current="request()->routeIs('orders.index')" wire:navigate>{{ __('Customer Order') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 

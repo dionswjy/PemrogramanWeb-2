@@ -99,8 +99,31 @@ class HomepageController extends Controller
 
     public function checkout()
     {
+        // Ambil cart dari user yang login
+        $cart = Cart::query()
+            ->with([
+                'items',
+                'items.itemable'
+            ])
+            ->where('user_id', auth()->guard('customer')->user()->id)
+            ->first();
+
+        // Jika cart kosong, redirect kembali dengan pesan error
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang belanja Anda kosong');
+        }
+
+        // Data tambahan yang diperlukan
+        $shippingMethods = \App\Models\ShippingMethod::all(); // Ganti dengan model shipping method Anda
+        $paymentMethods = \App\Models\PaymentMethod::all();  // Ganti dengan model payment method Anda
+        $provinces = \App\Models\Province::all();           // Jika menggunakan data provinsi
+
         return view($this->themeFolder . '.checkout', [
-            'title' => 'Checkout'
+            'title' => 'Checkout',
+            'cart' => $cart,
+            'shippingMethods' => $shippingMethods,
+            'paymentMethods' => $paymentMethods,
+            'provinces' => $provinces
         ]);
     }
 }

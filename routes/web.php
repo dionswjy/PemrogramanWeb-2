@@ -7,7 +7,9 @@ use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CartController;
-
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderController;
 
 // ====================
 // ROUTE UNTUK USER (FRONTEND)
@@ -24,6 +26,24 @@ Route::get('category/{slug}', [HomepageController::class, 'category'])->name('ca
 Route::get('cart', [HomepageController::class, 'cart'])->name('cart.index');
 Route::get('checkout', [HomepageController::class, 'checkout'])->name('checkout.index');
 
+Route::middleware(['auth:customer'])->group(function() {
+
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])
+        ->name('checkout.process');
+
+    Route::get('/order/success/{order}', [PaymentController::class, 'success'])
+        ->name('order.success');
+    
+    Route::get('/order/{order}/confirm-payment', [PaymentController::class, 'showConfirmationForm'])
+         ->name('payment.confirmation');
+         
+    Route::post('/order/{order}/confirm-payment', [PaymentController::class, 'confirmPayment'])
+         ->name('payment.submit_confirmation');
+});
+     
+
+// Endpoint untuk payment gateway notification     
+Route::post('/api/payment-notification', [PaymentController::class, 'handleNotification']);
 
 Route::group(['middleware'=>['is_customer_login']], function(){
     Route::controller(CartController::class)->group(function () {
@@ -49,10 +69,22 @@ Route::view('dashboard', 'dashboard')
 Route::prefix('dashboard')->middleware(['auth'])->name('dashboard.')->group(function () {
     Route::resource('categories', ProductCategoryController::class);
     Route::resource('products', ProductController::class);
+    Route::resource('order', OrderController::class);
+});
+
+Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
+Route::middleware(['auth'])->prefix('dashboard')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('dashboard.orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('dashboard.orders.show');
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('dashboard.orders.update-status');
+    Route::post('/orders/{order}/ship', [OrderController::class, 'markAsShipped'])->name('dashboard.orders.ship');
 });
 
 // Produk di luar dashboard tapi tetap dengan middleware auth
-Route::resource('products', ProductController::class)->middleware(['auth']);
+Route::prefix('admin')->group(function () {
+    Route::resource('products', ProductController::class)->middleware(['auth']);
+});
 
 // ====================
 // ROUTE CUSTOMER AUTH

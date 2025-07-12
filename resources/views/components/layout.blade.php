@@ -118,9 +118,9 @@
         <div class="col-md-3 mb-3">
           <h6 class="mb-3">Navigasi</h6>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-white text-decoration-none">Beranda</a></li>
-            <li><a href="#" class="text-white text-decoration-none">Produk</a></li>
-            <li><a href="#" class="text-white text-decoration-none">Kategori</a></li>
+            <li><a href="/" class="text-white text-decoration-none">Beranda</a></li>
+            <li><a href="/products" class="text-white text-decoration-none">Produk</a></li>
+            <li><a href="/categories" class="text-white text-decoration-none">Kategori</a></li>
             <li><a href="#" class="text-white text-decoration-none">Kontak</a></li>
           </ul>
         </div>

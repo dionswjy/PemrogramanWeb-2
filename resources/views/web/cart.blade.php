@@ -46,7 +46,7 @@
                             @endforelse
                         </div>
                     </div>
-                    <a href="{{ URL::to('/products') }}" class="btn btn-outline-primary mt-2"><i class="bi bi-arrow-left"></i> Lanjut Belanja</a>
+                    <a href="{{ URL::to('/') }}" class="btn btn-outline-primary mt-2"><i class="bi bi-arrow-left"></i> Lanjut Belanja</a>
                 </div>
                 <!-- Order Summary -->
                 <div class="col-lg-4">
