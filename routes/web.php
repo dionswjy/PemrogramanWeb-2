@@ -70,6 +70,8 @@ Route::prefix('dashboard')->middleware(['auth'])->name('dashboard.')->group(func
     Route::resource('categories', ProductCategoryController::class);
     Route::resource('products', ProductController::class);
     Route::resource('order', OrderController::class);
+    Route::post('products/sync/{id}', [ProductController::class, 'sync'])->name('products.sync');
+    Route::post('category/sync/{id}', [ProductCategoryController::class, 'sync'])->name('category.sync');
 });
 
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
