@@ -30,12 +30,12 @@
                                 <div class="col-md-6">
                                     <label for="nama_depan" class="form-label">Nama Depan*</label>
                                     <input type="text" class="form-control" id="nama_depan" name="nama_depan" required 
-                                           value="{{ auth()->guard('customer')->user()->first_name ?? old('nama_depan') }}">
+                                            value="{{ auth()->guard('customer')->user()->first_name ?? old('nama_depan') }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="nama_belakang" class="form-label">Nama Belakang*</label>
                                     <input type="text" class="form-control" id="nama_belakang" name="nama_belakang" required 
-                                           value="{{ auth()->guard('customer')->user()->last_name ?? old('nama_belakang') }}">
+                                            value="{{ auth()->guard('customer')->user()->last_name ?? old('nama_belakang') }}">
                                 </div>
                                 <div class="col-12">
                                     <label for="alamat" class="form-label">Alamat Lengkap*</label>
@@ -45,7 +45,7 @@
                                 <div class="col-md-4">
                                     <label for="kota" class="form-label">Kota/Kabupaten*</label>
                                     <input type="text" class="form-control" id="kota" name="kota" required 
-                                           value="{{ auth()->guard('customer')->user()->city ?? old('kota') }}">
+                                            value="{{ auth()->guard('customer')->user()->city ?? old('kota') }}">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="provinsi" class="form-label">Provinsi*</label>
@@ -53,7 +53,7 @@
                                         <option value="">Pilih Provinsi</option>
                                         @foreach($provinces as $province)
                                         <option value="{{ $province->id }}" 
-                                            {{ (auth()->guard('customer')->user()->province_id ?? old('provinsi_id')) == $province->id ? 'selected' : '' }}>
+                                            {{ (auth()->guard('customer')->user()->province_id ?? old(('provinsi_id')) == $province->id ? 'selected' : '' }}>
                                             {{ $province->name }}
                                         </option>
                                         @endforeach
@@ -62,18 +62,18 @@
                                 <div class="col-md-4">
                                     <label for="kode_pos" class="form-label">Kode Pos*</label>
                                     <input type="text" class="form-control" id="kode_pos" name="kode_pos" required 
-                                           value="{{ auth()->guard('customer')->user()->postal_code ?? old('kode_pos') }}">
+                                            value="{{ auth()->guard('customer')->user()->postal_code ?? old('kode_pos') }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="telepon" class="form-label">Nomor Telepon*</label>
                                     <input type="tel" class="form-control" id="telepon" name="telepon" required 
-                                           value="{{ auth()->guard('customer')->user()->phone ?? old('telepon') }}">
+                                            value="{{ auth()->guard('customer')->user()->phone ?? old('telepon') }}">
                                     <small class="text-muted">Contoh: 081234567890</small>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="email" class="form-label">Email*</label>
                                     <input type="email" class="form-control" id="email" name="email" required 
-                                           value="{{ auth()->guard('customer')->user()->email ?? old('email') }}">
+                                            value="{{ auth()->guard('customer')->user()->email ?? old('email') }}">
                                 </div>
                                 <div class="col-12">
                                     <label for="notes" class="form-label">Catatan (Opsional)</label>
@@ -97,11 +97,11 @@
                                 <label class="list-group-item d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <input class="form-check-input me-3" type="radio" 
-                                               name="shipping_method_id" 
-                                               value="{{ $method->id }}" 
-                                               {{ (old('shipping_method_id') == $method->id || $loop->first) ? 'checked' : '' }}
-                                               data-cost="{{ $method->cost }}"
-                                               required>
+                                                name="shipping_method_id" 
+                                                value="{{ $method->id }}" 
+                                                {{ (old('shipping_method_id') == $method->id || $loop->first) ? 'checked' : '' }}
+                                                data-cost="{{ $method->cost }}"
+                                                required>
                                         <div>
                                             <h6 class="mb-1">{{ $method->name }}</h6>
                                             <small class="text-muted">{{ $method->estimated_delivery }}</small>
@@ -127,10 +127,10 @@
                                 <label class="list-group-item">
                                     <div class="d-flex align-items-center">
                                         <input class="form-check-input me-3" type="radio" 
-                                               name="payment_method_id" 
-                                               value="{{ $method->id }}" 
-                                               {{ (old('payment_method_id') == $method->id || $loop->first) ? 'checked' : '' }}
-                                               required>
+                                                name="payment_method_id" 
+                                                value="{{ $method->id }}" 
+                                                {{ (old('payment_method_id') == $method->id || $loop->first) ? 'checked' : '' }}
+                                                required>
                                         <div>
                                             <h6 class="mb-1">{{ $method->name }}</h6>
                                             @if($method->description)
@@ -158,9 +158,9 @@
                                 @foreach($cart->items as $item)
                                 <div class="d-flex mb-3">
                                     <img src="{{ $item->itemable->image_url ?? asset('images/default-helm.jpg') }}" 
-                                         class="rounded me-3" width="60" height="60" 
-                                         alt="{{ $item->itemable->name }}"
-                                         style="object-fit: cover;">
+                                            class="rounded me-3" width="60" height="60" 
+                                            alt="{{ $item->itemable->name }}"
+                                            style="object-fit: cover;">
                                     <div class="flex-grow-1">
                                         <h6 class="my-0">{{ $item->itemable->name }}</h6>
                                         <small class="text-muted">Qty: {{ $item->quantity }}</small>
