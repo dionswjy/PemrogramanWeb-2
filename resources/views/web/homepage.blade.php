@@ -8,11 +8,12 @@
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
             @foreach($categories as $category)
                 <div class="col">
-                    <a href="{{ URL::to('/category/'.$category->slug) }}" class="card text-decoration-none">
+                    <a href="{{ URL::to('/category/' . $category->slug) }}" class="card text-decoration-none">
                         <div class="card category-card text-center h-100 py-3 border-0 shadow-sm">
                             <div class="mx-auto mb-2"
                                 style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:#f8f9fa;border-radius:50%;">
-                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" style="width:100px;height:100px;object-fit:contain;">
+                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}"
+                                    style="width:100px;height:100px;object-fit:contain;">
                             </div>
                             <div class="card-body p-2">
                                 <h6 class="card-title mb-1 text-dark">{{ $category->name }}</h6>
@@ -33,17 +34,17 @@
             @forelse($products as $product)
                 <div class="col-md-3 mb-4">
                     <div class="card product-card h-100 shadow-sm">
-                    <img 
-                        src="{{ $product->image_url ? asset('storage/' . ltrim($product->image_url, '/')) : 'https://via.placeholder.com/350x200?text=No+Image' }}" 
-                        class="card-img-top" 
-                        alt="{{ $product->name }}">
+                        <img src="{{ $product->image_url ? asset('storage/' . ltrim($product->image_url, '/')) : 'https://via.placeholder.com/350x200?text=No+Image' }}"
+                            class="card-img-top" alt="{{ $product->name }}">
 
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ $product->name }}</h5>
                             <p class="card-text text-truncate">{{ $product->description }}</p>
                             <div class="mt-auto">
-                                <span class="fw-bold text-primary">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-                                <a href="{{ route('product.show', $product->slug) }}" class="btn btn-outline-primary btn-sm float-end">Lihat Detail</a>
+                                <span class="fw-bold text-primary">Rp
+                                    {{ number_format($product->price, 0, ',', '.') }}</span>
+                                <a href="{{ route('product.show', $product->slug) }}"
+                                    class="btn btn-outline-primary btn-sm float-end">Lihat Detail</a>
                             </div>
                         </div>
                     </div>

@@ -26,26 +26,26 @@ Route::get('category/{slug}', [HomepageController::class, 'category'])->name('ca
 Route::get('cart', [HomepageController::class, 'cart'])->name('cart.index');
 Route::get('checkout', [HomepageController::class, 'checkout'])->name('checkout.index');
 
-Route::middleware(['auth:customer'])->group(function() {
+Route::middleware(['auth:customer'])->group(function () {
 
     Route::post('/checkout/process', [CheckoutController::class, 'process'])
         ->name('checkout.process');
 
     Route::get('/order/success/{order}', [PaymentController::class, 'success'])
         ->name('order.success');
-    
+
     Route::get('/order/{order}/confirm-payment', [PaymentController::class, 'showConfirmationForm'])
-         ->name('payment.confirmation');
-         
+        ->name('payment.confirmation');
+
     Route::post('/order/{order}/confirm-payment', [PaymentController::class, 'confirmPayment'])
-         ->name('payment.submit_confirmation');
+        ->name('payment.submit_confirmation');
 });
-     
+
 
 // Endpoint untuk payment gateway notification     
 Route::post('/api/payment-notification', [PaymentController::class, 'handleNotification']);
 
-Route::group(['middleware'=>['is_customer_login']], function(){
+Route::group(['middleware' => ['is_customer_login']], function () {
     Route::controller(CartController::class)->group(function () {
         Route::post('cart/add', 'add')->name('cart.add');
         Route::delete('cart/remove/{id}', 'remove')->name('cart.remove');
@@ -120,4 +120,4 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

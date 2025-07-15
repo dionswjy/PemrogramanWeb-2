@@ -14,10 +14,8 @@
         <div class="row g-5 align-items-start">
             <div class="col-md-6">
                 <div class="bg-white shadow rounded p-3">
-                    <img 
-                        src="{{ $product->image_url ? asset('storage/' . ltrim($product->image_url, '/')) : 'https://via.placeholder.com/350x200?text=No+Image' }}" 
-                        class="card-img-top" 
-                        alt="{{ $product->name }}">
+                    <img src="{{ $product->image_url ? asset('storage/' . ltrim($product->image_url, '/')) : 'https://via.placeholder.com/350x200?text=No+Image' }}"
+                        class="card-img-top" alt="{{ $product->name }}">
                 </div>
                 <div class="mt-3">
                     <span class="badge bg-secondary">{{ $product->category->name ?? 'Kategori Tidak Diketahui' }}</span>
@@ -26,7 +24,8 @@
             <div class="col-md-6">
                 <h1 class="mb-2 fw-bold">{{ $product->name }}</h1>
                 <div class="mb-3">
-                    <span class="fs-4 text-success fw-semibold">Rp.{{ number_format($product->price, 0, ',', '.') }}</span>
+                    <span
+                        class="fs-4 text-success fw-semibold">Rp.{{ number_format($product->price, 0, ',', '.') }}</span>
                     @if($product->old_price)
                         <span class="text-muted text-decoration-line-through ms-2">
                             Rp{{ number_format($product->old_price, 0, ',', '.') }}
@@ -40,7 +39,8 @@
                     @csrf
                     <div class="input-group" style="max-width: 320px;">
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ $product->stock }}">
+                        <input type="number" name="quantity" class="form-control" value="1" min="1"
+                            max="{{ $product->stock }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="bi bi-cart-plus me-1"></i> Tambah ke Keranjang
                         </button>
@@ -76,7 +76,7 @@
             @foreach($relatedProducts as $relatedProduct)
                 <div class="col">
                     <div class="card h-100 shadow-sm">
-                        <img src="{{ $relatedProduct->image_url? asset($relatedProduct->image_url): 'https://via.placeholder.com/350x200?text=No+Image' }}"
+                        <img src="{{ $relatedProduct->image_url ? asset($relatedProduct->image_url) : 'https://via.placeholder.com/350x200?text=No+Image' }}"
                             class="card-img-top" alt="{{ $relatedProduct->name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $relatedProduct->name }}</h5>
