@@ -97,13 +97,14 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+  
     public function edit(string $id)
-    {
-        $product = Product::findOrFail($id);
-        $categories = Categories::all();
+{
+    $product = Product::with('category')->findOrFail($id); // WITH RELATION
+    $categories = Categories::all();
 
-        return view('dashboard.products.edit', compact('product', 'categories'));
-    }
+    return view('dashboard.products.edit', compact('product', 'categories'));
+}
 
     /**
      * Update the specified resource in storage.
