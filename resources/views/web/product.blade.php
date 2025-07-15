@@ -14,8 +14,10 @@
         <div class="row g-5 align-items-start">
             <div class="col-md-6">
                 <div class="bg-white shadow rounded p-3">
-                    <img src="{{ $product->image_url? asset($product->image_url): 'https://via.placeholder.com/500x500' }}"
-                        class="img-fluid rounded w-100" alt="{{ $product->name }}">
+                    <img 
+                        src="{{ $product->image_url ? asset('storage/' . ltrim($product->image_url, '/')) : 'https://via.placeholder.com/350x200?text=No+Image' }}" 
+                        class="card-img-top" 
+                        alt="{{ $product->name }}">
                 </div>
                 <div class="mt-3">
                     <span class="badge bg-secondary">{{ $product->category->name ?? 'Kategori Tidak Diketahui' }}</span>
