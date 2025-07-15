@@ -18,8 +18,8 @@
                         <div class="card-body p-3">
                             @forelse($cart->items as $item)
                                 <div class="cart-item d-flex align-items-center mb-3 border-bottom pb-3">
-                                    <img src="{{ $product->image_url ? asset('storage/' . ltrim($product->image_url, '/')) : 'https://via.placeholder.com/350x200?text=No+Image' }}"
-                                        class="card-img-top" alt="{{ $product->name }}">
+                                    <img src="{{ $item->itemable->image_url ? asset('storage/' . ltrim($item->itemable->image_url, '/')) : 'https://via.placeholder.com/350x200?text=No+Image' }}"
+                                        class="card-img-top" alt="{{ $item->itemable->name }}">
                                     <div class="flex-grow-1">
                                         <h5 class="cart-item-name mb-1">{{ $item->itemable->name }}</h5>
                                         <p class="cart-item-price mb-0 text-muted">
