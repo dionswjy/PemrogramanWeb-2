@@ -108,11 +108,11 @@
   <div class="container-fluid py-4">
     {{ $slot }}
   </div>
-  <footer class="bg-dark text-white pt-4 mt-5" style="background: linear-gradient(90deg, #4e54c8 0%, #8f94fb 100%);">
+  <footer class="bg-dark text-white pt-4 mt-5" style="background: linear-gradient(90deg, #c84e4eff 0%, #fb8f8fff 100%);">
     <div class="container p-3">
       <div class="row">
         <div class="col-md-6 mb-3">
-          <h5 class="mb-3">E-Commerce</h5>
+          <h5 class="mb-3">AntiTilang</h5>
           <p class="small">Belanja mudah, cepat, dan aman di toko online kami. Temukan produk favorit Anda dengan harga terbaik.</p>
         </div>
         <div class="col-md-3 mb-3">
@@ -127,7 +127,7 @@
         <div class="col-md-3 mb-3">
           <h6 class="mb-3">Kontak Kami</h6>
           <ul class="list-unstyled small">
-            <li><i class="bi bi-envelope"></i> info@ecommerce.com</li>
+            <li><i class="bi bi-envelope"></i> helmetkushop@gmail.com</li>
             <li><i class="bi bi-telephone"></i> +62 856 6100 994</li>
             <li><i class="bi bi-geo-alt"></i> Tegal, Indonesia</li>
           </ul>
@@ -135,7 +135,7 @@
       </div>
       <hr class="bg-secondary">
       <div class="text-center pb-3">
-        <small>(c) {{ date('Y') }} E-Commerce. All rights reserved.</small>
+        <small>(c) {{ date('Y') }} AntiTilang. All rights reserved.</small>
       </div>
     </div>
   </footer>
