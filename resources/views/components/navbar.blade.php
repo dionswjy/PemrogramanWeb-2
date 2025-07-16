@@ -3,8 +3,8 @@
         <div class="container">
             <a class="navbar-brand text-white" href="/">AntiTilang</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -23,8 +23,8 @@
 
                 @if(auth()->guard('customer')->check())
                     <div class="dropdown">
-                        <a class="btn btn-outline-light dropdown-toggle" href="#"
-                            role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="userDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             {{ Auth::guard('customer')->user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
