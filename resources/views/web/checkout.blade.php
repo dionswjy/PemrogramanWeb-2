@@ -157,7 +157,7 @@
                             <div class="mb-3">
                                 @foreach($cart->items as $item)
                                 <div class="d-flex mb-3">
-                                    <<img src="{{ $item->itemable->image_url 
+                                    <img src="{{ $item->itemable->image_url 
                                             ? asset('storage/' . ltrim($item->itemable->image_url, '/')) 
                                             : 'https://via.placeholder.com/350x200?text=No+Image' }}"
                                             class="rounded me-3" width="60" height="60" 
@@ -166,7 +166,7 @@
                                     <div class="flex-grow-1">
                                         <h6 class="my-0">{{ $item->itemable->name }}</h6>
                                         <small class="text-muted">Qty: {{ $item->quantity }}</small>
-                                        @if($item->itemable->size))
+                                        @if($item->itemable->size)
                                         <small class="d-block text-muted">Ukuran: {{ $item->itemable->size }}</small>
                                         @endif
                                     </div>
@@ -186,7 +186,7 @@
                                     <span>Ongkos Kirim</span>
                                     <span id="shipping-cost">Rp {{ number_format($shippingMethods->first()->cost ?? 0, 0, ',', '.') }}</span>
                                 </div>
-                                @if($cart->coupon))
+                                @if($cart->coupon)
                                 <div class="d-flex justify-content-between mb-2 text-success">
                                     <span>Diskon</span>
                                     <span>- Rp {{ number_format($cart->discount_amount, 0, ',', '.') }}</span>
