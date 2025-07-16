@@ -53,7 +53,7 @@
                                         <option value="">Pilih Provinsi</option>
                                         @foreach($provinces as $province)
                                         <option value="{{ $province->id }}" 
-                                            {{ (auth()->guard('customer')->user()->province_id ?? old(('provinsi_id')) == $province->id ? 'selected' : '' }}>
+                                            {{ (auth()->guard('customer')->user()->province_id ?? old('provinsi_id')) == $province->id ? 'selected' : '' }}>
                                             {{ $province->name }}
                                         </option>
                                         @endforeach
