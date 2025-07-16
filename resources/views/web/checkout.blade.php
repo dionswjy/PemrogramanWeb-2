@@ -157,7 +157,9 @@
                             <div class="mb-3">
                                 @foreach($cart->items as $item)
                                 <div class="d-flex mb-3">
-                                    <img src="{{ $item->itemable->image_url ?? asset('images/default-helm.jpg') }}" 
+                                    <<img src="{{ $item->itemable->image_url 
+                                            ? asset('storage/' . ltrim($item->itemable->image_url, '/')) 
+                                            : 'https://via.placeholder.com/350x200?text=No+Image' }}"
                                             class="rounded me-3" width="60" height="60" 
                                             alt="{{ $item->itemable->name }}"
                                             style="object-fit: cover;">
